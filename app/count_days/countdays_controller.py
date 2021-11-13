@@ -1,6 +1,7 @@
 from flask import request
 from flask_restx import Resource, reqparse, Namespace
 
+from app.count_days.schema import countdays_response
 from . import api_countdays
 
 # Add namespace to API
@@ -9,7 +10,7 @@ from .countdays_service import get_count_days_between_dates
 countdays_api = Namespace('countdays')
 api_countdays.add_namespace(countdays_api)
 
-@api_countdays.route('/countdays')
+@api_countdays.route('')
 class CountDaysController(Resource):
 
     @api_countdays.doc(responses={
@@ -17,6 +18,7 @@ class CountDaysController(Resource):
         400: 'Error en los datos recibidos'
     })
     @api_countdays.doc(params={'start_date': 'Fecha de inicio', 'end_date': 'Fecha de fin'})
+    @api_countdays.marshal_with(countdays_response)
     def get(self):
         """Calcula el numero de dias que hay entre 2 fechas"""
         parser = reqparse.RequestParser()

@@ -43,8 +43,12 @@ class TestCountDaysService(TestCase):
         self.assertEqual("400 Bad Request: The browser (or proxy) sent a request that this server could not understand.", str(ctx.exception))
 
     def test_count_days(self):
-        self.assertEqual(get_count_days_between_dates('01/11/2021', '30/11/2021', [0]), 5)
-        self.assertEqual(get_count_days_between_dates('01/11/2021', '30/11/2021', [0, 1, 2, 3, 4, 5, 6]), 30)
-        self.assertEqual(get_count_days_between_dates('01/11/2021', '30/11/2021', [2]), 4)
+        self.assertEqual(get_count_days_between_dates('01/11/2021', '30/11/2021', [0])['total_days'], 5)
+        self.assertEqual(get_count_days_between_dates('01/11/2021', '30/11/2021', [0, 1, 2, 3, 4, 5, 6])['total_days'], 30)
+        self.assertEqual(get_count_days_between_dates('01/11/2021', '30/11/2021', [2])['total_days'], 4)
+        self.assertEqual(get_count_days_between_dates('01/01/2021', '31/12/2021', [0])['total_days'], 52)
+        self.assertEqual(get_count_days_between_dates('01/01/2021', '31/12/2021', [0, 1, 2, 3, 4, 5, 6])['total_days'], 365)
+        self.assertEqual(get_count_days_between_dates('01/01/2024', '31/12/2024', [0, 1, 2, 3, 4, 5, 6])['total_days'], 366)
 
-
+        self.assertEqual(get_count_days_between_dates('01/01/2021', '31/12/2021', [0, 1, 2, 3, 4, 5, 6])['detail_days'],
+                         [52, 52, 52, 52, 53, 52, 52])

@@ -5,13 +5,15 @@ from flask_restx import abort
 
 def get_count_days_between_dates(start_date_input, end_date_input, weekdays):
     dates = _validation_dates(start_date_input, end_date_input)
-    _validation_weekdays(weekdays)
+    weekdays = _validation_weekdays(weekdays)
     total_days = 0
-
+    detail_days = [0, 0, 0, 0, 0, 0, 0]
     for day in weekdays:
-        total_days += get_count_days_by_weekday(dates['start_date'], dates['end_date'], day)
+        days_calculate = get_count_days_by_weekday(dates['start_date'], dates['end_date'], day)
+        detail_days[day] = days_calculate
+        total_days += days_calculate
 
-    return total_days
+    return {'total_days': total_days, 'detail_days': detail_days}
 
 
 def get_count_days_by_weekday(start, end, weekday):
@@ -32,7 +34,11 @@ def _validation_dates(start_date_input, end_date_input):
 
 def _validation_weekdays(weekdays):
     if len(weekdays) > 0:
+        try:
+            weekdays = list(map(int, weekdays))
+        except:
+            abort(400, 'Weekdays only access number between 0 and 6')
         for day in weekdays:
             if not isinstance(day, int) or day < 0 or day > 6:
                 abort(400, 'Weekdays only access number between 0 and 6')
-    return True
+    return weekdays
