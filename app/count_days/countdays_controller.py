@@ -1,8 +1,11 @@
+from flask import request
 from flask_restx import Resource, reqparse, Namespace
 
 from . import api_countdays
 
 # Add namespace to API
+from .countdays_service import get_count_days_between_dates
+
 countdays_api = Namespace('countdays')
 api_countdays.add_namespace(countdays_api)
 
@@ -22,4 +25,6 @@ class CountDaysController(Resource):
         args = parser.parse_args()
         start_date = args.get('start_date')
         end_date = args.get('end_date')
-        return f'Contador de días entre: {start_date} y {end_date}'
+        dict = request.args.to_dict(flat=False)
+        weekdays = [] if not 'weekdays' in dict.keys() else dict['weekdays']
+        return get_count_days_between_dates(start_date, end_date, weekdays)
