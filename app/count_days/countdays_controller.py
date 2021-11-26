@@ -1,5 +1,5 @@
 from flask import request
-from flask_restx import Resource, reqparse, Namespace
+from flask_restx import Resource, reqparse, Namespace, abort
 
 from app.count_days.schema import countdays_response
 from . import api_countdays
@@ -27,6 +27,8 @@ class CountDaysController(Resource):
         args = parser.parse_args()
         start_date = args.get('start_date')
         end_date = args.get('end_date')
+        if start_date is None or end_date is None:
+            abort(400, 'Los parámetros start_date y end_date son obligatorio')
         dict = request.args.to_dict(flat=False)
         weekdays = [] if not 'weekdays' in dict.keys() else dict['weekdays']
         return get_count_days_between_dates(start_date, end_date, weekdays)

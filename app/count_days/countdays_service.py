@@ -41,4 +41,6 @@ def _validation_weekdays(weekdays):
         for day in weekdays:
             if not isinstance(day, int) or day < 0 or day > 6:
                 abort(400, 'Weekdays only access number between 0 and 6')
+    else:
+        weekdays = [0, 1, 2, 3, 4, 5, 6]
     return weekdays
